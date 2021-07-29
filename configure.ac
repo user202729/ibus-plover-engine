@@ -85,8 +85,6 @@ AM_GNU_GETTEXT_VERSION(0.16.1)
 AC_CONFIG_FILES(po/Makefile.in
 Makefile
 ibus-tmpl.spec
-src/Makefile
-src/enchant.xml.in
 engine/Makefile
 engine/ibus-engine-enchant-python
 engine/enchant-python.xml.in
