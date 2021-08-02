@@ -30,3 +30,10 @@ Go to IBus Preferences -> Input method, add and select engine "Enchant (English)
 Additionally, it's recommended to configure IBus to use same input method for all applications
 (Preferences -> Advanced -> Share the same input method among all applications)
 
+### Common issues
+
+If any other IBus engine works in the application, this engine should work too. Otherwise
+search for IBus issues with that application.
+
+* Tor browser: https://askubuntu.com/questions/375826/keyboard-doesnt-work-with-tor-browser
+
