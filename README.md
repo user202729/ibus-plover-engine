@@ -11,7 +11,7 @@ If there's any missing dependency, refer to [IBus system requirements](https://g
 Adapted from [IBus wiki](https://github.com/ibus/ibus/wiki/DevGuide).
 
 	git clone https://github.com/user202729/ibus-tmpl
-	cd  ibus-tmpl
+	cd ibus-tmpl
 	./autogen.sh --prefix /usr
 	make
 	sudo make install
@@ -23,6 +23,7 @@ Adapted from [IBus wiki](https://github.com/ibus/ibus/wiki/DevGuide).
 ### Usage
 
 Enable the extension plugin in Plover.
+(you also need to install a Plover extension plugin [`plover-ibus`](https://github.com/user202729/plover-ibus))
 
 Go to IBus Preferences -> Input method, add and select engine "Enchant (English)".
 
