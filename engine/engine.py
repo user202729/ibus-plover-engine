@@ -50,12 +50,15 @@ def instance()->"EngineEnchant":
 
 print('start00')
 
+from plover_ibus.ibus_lib import keysym_to_name
+from typing import Dict
+
 
 class EngineEnchant(IBus.Engine):
 	__gtype_name__ = 'EngineEnchant'
 	#__dict = enchant.Dict("en")
 
-	def __init__(self):
+	def __init__(self)->None:
 		super(EngineEnchant, self).__init__()
 		self.__is_invalidate = False
 		self.__preedit_string = ""
@@ -69,105 +72,14 @@ class EngineEnchant(IBus.Engine):
 		print("**")
 		#GLib.timeout_add(1000, lambda: [self._commit_string("a"), True][-1]) # loop indefinitely
 
-	def do_process_key_event(self, keyval, keycode, state):
-		print(keyval, keycode, state)
+	# inconsistently "keysym" parameter is called keyval in some places
+	def do_process_key_event(self, keysym: int, keycode: int, state: int)->bool:
+		print(keysym_to_name.get(keysym, f"?{keysym}"), keycode, IBus.ModifierType(state))
 		return False
 
-		#print("process_key_event(%04x, %04x, %04x)" % (keyval, keycode, state))
-		# ignore key release events
-		is_press = ((state & IBus.ModifierType.RELEASE_MASK) == 0)
-		if not is_press:
-			return False
-
-		if keyval==ord("a") and (
-				state & (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK) == 0):
-			self._commit_string("b")
-			return True
-
-		return False
-		# ========
-
-
-		if keyval in range(keysyms.a, keysyms.z + 1) or \
-			keyval in range(keysyms.A, keysyms.Z + 1):
-			if state & (IBus.ModifierType.CONTROL_MASK | IBus.ModifierType.MOD1_MASK) == 0:
-				GLib.timeout_add(1000,
-						lambda: [self._commit_string(chr(keyval+1)), False][-1]
-						)
-				#import threading
-				#threading.Timer(
-				#		1,
-				#		lambda: self._commit_string(chr(keyval+1))
-				#		).start()
-				## (is this safe?...)
-				#self.__invalidate()
-				return True
-
-		return False
-
-	def __invalidate(self):
-		if self.__is_invalidate:
-			return
-		self.__is_invalidate = True
-		GLib.idle_add(self.__update)
-
-
-	def do_page_up(self):
-		if self.__lookup_table.page_up():
-			self.page_up_lookup_table()
-			return True
-		return False
-
-	def do_page_down(self):
-		if self.__lookup_table.page_down():
-			self.page_down_lookup_table()
-			return True
-		return False
-
-	def do_cursor_up(self):
-		if self.__lookup_table.cursor_up():
-			self.cursor_up_lookup_table()
-			return True
-		return False
-
-	def do_cursor_down(self):
-		if self.__lookup_table.cursor_down():
-			self.cursor_down_lookup_table()
-			return True
-		return False
-
-	def _commit_string(self, text):
+	def _commit_string(self, text: str)->None:
 		print("**")
 		self.commit_text(IBus.Text.new_from_string(text))
-		#self.__preedit_string = ""
-		#self.__update()
-
-	def __update(self):
-		preedit_len = len(self.__preedit_string)
-		attrs = IBus.AttrList()
-		self.__lookup_table.clear()
-		if preedit_len > 0:
-			if not self.__dict.check(self.__preedit_string):
-				attrs.append(IBus.Attribute.new(IBus.AttrType.FOREGROUND,
-						0xff0000, 0, preedit_len))
-				for text in self.__dict.suggest(self.__preedit_string):
-					self.__lookup_table.append_candidate(IBus.Text.new_from_string(text))
-		text = IBus.Text.new_from_string(self.__preedit_string)
-		text.set_attributes(attrs)
-		self.update_auxiliary_text(text, preedit_len > 0)
-
-		attrs.append(IBus.Attribute.new(IBus.AttrType.UNDERLINE,
-				IBus.AttrUnderline.SINGLE, 0, preedit_len))
-		text = IBus.Text.new_from_string(self.__preedit_string)
-		text.set_attributes(attrs)
-		self.update_preedit_text(text, preedit_len, preedit_len > 0)
-		self.__update_lookup_table()
-		self.__is_invalidate = False
-
-	def __update_lookup_table(self):
-		visible = self.__lookup_table.get_number_of_candidates() > 0
-		self.update_lookup_table(self.__lookup_table, visible)
-
 
 	def do_focus_in(self):
 		print("focus_in")
@@ -178,7 +90,4 @@ class EngineEnchant(IBus.Engine):
 
 	def do_reset(self):
 		print("reset")
-
-	def do_property_activate(self, prop_name):
-		print("PropertyActivate(%s)" % prop_name)
 

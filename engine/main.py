@@ -1,3 +1,4 @@
+#!/bin/python3
 #
 # ibus-tmpl - The Input Bus template project
 #
@@ -40,6 +41,10 @@ import gettext
 #	#pass
 import engine
 EngineEnchant=engine.EngineEnchant
+
+from plover_ibus.ibus_lib import keysym_to_keycode, keysym_to_name
+from plover_ibus.lib import response_path, listen_path_name
+from plover_ibus import lib
 
 _ = lambda a: gettext.dgettext('ibus-tmpl', a)
 
@@ -97,70 +102,19 @@ import typing
 
 from pathlib import Path
 import tempfile
-response_path=Path(tempfile.gettempdir())/".ibus-response"
-
-# assuming some keyboard layout
-keycode_to_scancode: typing.Dict[int, int]={
-100: 32,
-101: 18,
-102: 33,
-103: 34,
-104: 35,
-105: 23,
-106: 36,
-107: 37,
-108: 38,
-109: 50,
-110: 49,
-111: 24,
-112: 25,
-113: 16,
-114: 19,
-115: 31,
-116: 20,
-117: 22,
-118: 47,
-119: 17,
-120: 45,
-121: 21,
-122: 44,
-44: 51,
-46: 52,
-47: 53,
-48: 11,
-49: 2,
-50: 3,
-51: 4,
-52: 5,
-53: 6,
-54: 7,
-55: 8,
-56: 9,
-57: 10,
-65288: 14,
-65289: 15,
-65293: 28,
-65505: 42,
-65507: 29,
-65515: 125,
-92: 43,
-97: 30,
-98: 48,
-99: 46,
-}
 
 def handle_message(message: typing.Any)->None:
 	type_, content=message
 	engine_=engine.instance()
 
-	def send_key(keycode: int, scancode: int=None)->None:
-		if scancode is None:
-			scancode=keycode_to_scancode.get(keycode, 0)
-		engine_.forward_key_event(keycode, scancode, 0)
-		engine_.forward_key_event(keycode, scancode, IBus.ModifierType.RELEASE_MASK)
+	def send_key(keysym: int, keycode: int=None)->None:
+		if keycode is None:
+			keycode=keysym_to_keycode.get(keysym, 0)
+		engine_.forward_key_event(keysym, keycode, 0)
+		engine_.forward_key_event(keysym, keycode, IBus.ModifierType.RELEASE_MASK)
 
 
-	if type_=="d":
+	if type_==lib.BACKSPACE:
 		text, cursor_pos, anchor_pos=engine_.get_surrounding_text()
 		print("**", text, cursor_pos, anchor_pos)
 		to_delete: int=min(cursor_pos, content)
@@ -170,10 +124,10 @@ def handle_message(message: typing.Any)->None:
 		for _ in range(content):
 			send_key(IBus.BackSpace)
 
-	elif type_=="S":
+	elif type_==lib.RAW_STRING:
 		engine_._commit_string(content)
 
-	elif type_=="s":
+	elif type_==lib.SMART_STRING:
 		print('send str', content)
 		import re
 
@@ -183,11 +137,12 @@ def handle_message(message: typing.Any)->None:
 			elif part=="\n": send_key(IBus.Return)
 			else: engine_._commit_string(part)
 
-	elif type_=="c":
-		for keycode, mods in content:
+	elif type_==lib.COMBINATION:
+		for keysym, mods in content:
+			print("send combo", keysym_to_name[keysym], keysym, keysym_to_keycode.get(keysym, 0))
 			engine_.forward_key_event(
-					keycode,
-					keycode_to_scancode.get(keycode, 0),
+					keysym,
+					keysym_to_keycode.get(keysym, 0),
 					mods
 					)
 
@@ -241,7 +196,7 @@ controller_=None
 
 def listen_start(retry: bool=True)->None:
 	print("listen_start")
-	controller=Controller(".ibus-listen")
+	controller=Controller(listen_path_name)
 	controller.__enter__()
 
 	assert controller._thread is None
