@@ -10,8 +10,8 @@ If there's any missing dependency, refer to [IBus system requirements](https://g
 
 Adapted from [IBus wiki](https://github.com/ibus/ibus/wiki/DevGuide).
 
-	git clone https://github.com/user202729/ibus-tmpl
-	cd ibus-tmpl
+	git clone https://github.com/user202729/ibus-plover-engine
+	cd ibus-plover-engine
 	./autogen.sh --prefix /usr
 	make
 	sudo make install
