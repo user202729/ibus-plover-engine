@@ -37,3 +37,5 @@ search for IBus issues with that application.
 
 * Tor browser: https://askubuntu.com/questions/375826/keyboard-doesnt-work-with-tor-browser
 
+For engine-specific issues, refer to [GitHub's issue tracker](https://github.com/user202729/ibus-plover-engine/issues).
+If you can't find your issue there, you may want to open a new issue.
