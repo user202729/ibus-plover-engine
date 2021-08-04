@@ -25,7 +25,7 @@ Adapted from [IBus wiki](https://github.com/ibus/ibus/wiki/DevGuide).
 Enable the extension plugin in Plover.
 (you also need to install a Plover extension plugin [`plover-ibus`](https://github.com/user202729/plover-ibus))
 
-Go to IBus Preferences -> Input method, add and select engine "Enchant (English)".
+Go to IBus Preferences -> Input method, add and select engine "Plover remote" (in "English" category).
 
 Additionally, it's recommended to configure IBus to use same input method for all applications
 (Preferences -> Advanced -> Share the same input method among all applications)

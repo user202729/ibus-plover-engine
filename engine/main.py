@@ -53,7 +53,7 @@ class IMApp:
 		long_engine_name = "enchant python" if exec_by_ibus else "enchant python (debug)"
 		self.__component = \
 				IBus.Component.new("org.freedesktop.IBus.EnchantPython",
-								   "Enchant Python Component",
+								   "Plover remote control engine",
 								   "0.1.0",
 								   "GPL",
 								   "Peng Huang <shawn.p.huang@gmail.com>",
@@ -63,7 +63,7 @@ class IMApp:
 		engine_name="enchant-python"
 		engine = IBus.EngineDesc.new(engine_name,
 									 long_engine_name,
-									 "English Enchant",
+									 "Plover remote control engine",
 									 "en",
 									 "GPL",
 									 "Peng Huang <shawn.p.huang@gmail.com>",

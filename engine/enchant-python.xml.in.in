@@ -2,7 +2,7 @@
 <!-- filename: enchant.xml -->
 <component>
 	<name>org.freedesktop.IBus.EnchantPython</name>
-	<description>Enchant Python Component</description>
+	<description>Plover remote control engine</description>
 	<exec>${libexecdir}/ibus-engine-enchant-python --ibus</exec>
 	<version>@VERSION@</version>
 	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
@@ -18,8 +18,8 @@
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<icon>${pkgdatadir}/icons/ibus-enchant.svg</icon>
 			<layout>us</layout>
-			<longname>Enchant (Python)</longname>
-			<description>Enchant Input Method</description>
+			<longname>Plover remote</longname>
+			<description>Plover remote control engine</description>
 			<rank>0</rank>
 		</engine>
 	</engines>
